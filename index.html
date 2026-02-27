@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Project Jeremy</title>
+<style>
+body {
+    background-color: black;
+    color: #00ff88;
+    font-family: monospace;
+    text-align: center;
+}
+button {
+    background-color: #00ff88;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.hidden {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Initializing Archive...</h1>
+<p id="loading">Accessing Memory Core...</p>
+
+<button onclick="enterStory()">ENTER THE STORY</button>
+
+<div id="story" class="hidden">
+    <h2>PROJECT JEREMY</h2>
+    <p>15 years old. Dreaming bigger than his environment.</p>
+    <p>Admitted to Chania. Heartbreak survived.</p>
+    <p>Discipline under construction.</p>
+    <p>Status: Building The Future 💯</p>
+
+    <h3>Future Lock</h3>
+    <input type="password" id="pass" placeholder="Enter Password">
+    <button onclick="unlock()">Unlock</button>
+    <p id="future"></p>
+</div>
+
+<script>
+function enterStory() {
+    document.getElementById("story").classList.remove("hidden");
+}
+
+function unlock() {
+    var password = document.getElementById("pass").value;
+    if(password === "MPShah2026") {
+        document.getElementById("future").innerText =
+        "If you are reading this in 2030, you made it. Keep going.";
+    } else {
+        document.getElementById("future").innerText =
+        "Access Denied.";
+    }
+}
+</script>
+
+</body>
+</html>
