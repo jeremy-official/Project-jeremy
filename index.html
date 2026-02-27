@@ -1,63 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Project Jeremy</title>
+<meta charset="UTF-8">
+<title>Project Jeremy V2 – Cinematic</title>
 <style>
-body {
-    background-color: black;
+  body {
+    margin: 0;
+    padding: 0;
+    background: black;
     color: #00ff88;
     font-family: monospace;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Background video */
+  #bgVideo {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.4);
+  }
+
+  /* Terminal intro */
+  #terminalIntro {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-}
-button {
+  }
+  .typing { 
+    border-right: .1em solid #00ff88;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Story */
+  #story {
+    display: none;
+    padding: 50px 20px;
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.6em;
+  }
+  .milestone {
+    margin: 40px 0;
+    padding: 20px;
+    border-left: 4px solid #00ff88;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease-out;
+    cursor: pointer;
+  }
+  .milestone.visible { opacity: 1; transform: translateY(0); }
+
+  /* Buttons/Input */
+  button {
     background-color: #00ff88;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     margin-top: 20px;
-}
-.hidden {
-    display: none;
-}
+    font-weight: bold;
+    font-family: monospace;
+  }
+  input {
+    padding: 10px;
+    font-family: monospace;
+    font-size: 1em;
+    margin-top: 10px;
+    color: #00ff88;
+    background-color: #111111;
+    border: 1px solid #00ff88;
+  }
 </style>
 </head>
-
 <body>
 
-<h1>Initializing Archive...</h1>
-<p id="loading">Accessing Memory Core...</p>
+<!-- Emotional background video -->
+<video autoplay loop muted id="bgVideo">
+  <source src="sunset.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-<button onclick="enterStory()">ENTER THE STORY</button>
-
-<div id="story" class="hidden">
-    <h2>PROJECT JEREMY</h2>
-    <p>15 years old. Dreaming bigger than his environment.</p>
-    <p>Admitted to Chania. Heartbreak survived.</p>
-    <p>Discipline under construction.</p>
-    <p>Status: Building The Future 💯</p>
-
-    <h3>Future Lock</h3>
-    <input type="password" id="pass" placeholder="Enter Password">
-    <button onclick="unlock()">Unlock</button>
-    <p id="future"></p>
+<!-- Terminal Intro -->
+<div id="terminalIntro">
+  <h1 class="typing" id="line1"></h1>
+  <h2 class="typing" id="line2"></h2>
+  <h3 class="typing" id="line3"></h3>
+  <button onclick="enterStory()">ENTER STORY</button>
 </div>
 
+<!-- Story Section -->
+<div id="story">
+  <h2>PROJECT JEREMY – JARVIS & JEREMY UNIVERSE</h2>
+
+  <!-- Milestones -->
+  <div class="milestone" data-audio="narration1.mp3">
+    <h3>2025 – Pain built discipline</h3>
+    <p>Learning self-control, choosing focus, surviving hardships.</p>
+  </div>
+
+  <div class="milestone" data-audio="narration2.mp3">
+    <h3>2025 – Secured Chania Admission</h3>
+    <p>Dreams taking shape, first major victory unlocked.</p>
+  </div>
+
+  <div class="milestone" data-audio="narration3.mp3">
+    <h3>Heartbreak Era</h3>
+    <p>Learning loyalty, letting go, becoming stronger inside.</p>
+  </div>
+
+  <div class="milestone" data-audio="narration4.mp3">
+    <h3>Streak Days</h3>
+    <p>Every small victory counts. Discipline is cumulative.</p>
+  </div>
+
+  <!-- Future Lock -->
+  <h3>Future Lock</h3>
+  <input type="password" id="pass" placeholder="Enter Password">
+  <button onclick="unlock()">Unlock</button>
+  <p id="future"></p>
+</div>
+
+<!-- Chill Music -->
+<audio id="bgMusic" src="chill-beats.mp3" loop autoplay muted></audio>
+<button onclick="toggleMusic()">🎵 Play/Pause Music</button>
+
 <script>
-function enterStory() {
-    document.getElementById("story").classList.remove("hidden");
+/* Terminal typing */
+const text1 = "Initializing Archive...";
+const text2 = "Accessing Memory Core...";
+const text3 = "User detected: Jeremy\nStatus: Building The Future 💯";
+
+function typeEffect(element, text, delay = 100, callback) {
+  let i = 0;
+  element.innerHTML = "";
+  const timer = setInterval(() => {
+    element.innerHTML += text.charAt(i);
+    i++;
+    if(i >= text.length) { clearInterval(timer); if(callback) callback(); }
+  }, delay);
 }
 
+typeEffect(document.getElementById("line1"), text1, 80, () => {
+  typeEffect(document.getElementById("line2"), text2, 80, () => {
+    typeEffect(document.getElementById("line3"), text3, 50);
+  });
+});
+
+/* Enter Story */
+function enterStory() {
+  document.getElementById("terminalIntro").style.display = "none";
+  document.getElementById("story").style.display = "block";
+  autoPlayMilestones();
+}
+
+/* Milestones */
+const milestones = document.querySelectorAll(".milestone");
+let current = 0;
+function showMilestone(index) {
+  const milestone = milestones[index];
+  milestone.classList.add("visible");
+  playNarration(milestone.dataset.audio);
+}
+function autoPlayMilestones() {
+  if(current < milestones.length){
+    showMilestone(current);
+    current++;
+    setTimeout(autoPlayMilestones, 4000);
+  }
+}
+
+/* Click milestone manually */
+milestones.forEach((m,i)=>{m.addEventListener("click",()=>{showMilestone(i);});});
+
+/* Future Lock */
 function unlock() {
-    var password = document.getElementById("pass").value;
-    if(password === "MPShah2026") {
-        document.getElementById("future").innerText =
-        "If you are reading this in 2030, you made it. Keep going.";
-    } else {
-        document.getElementById("future").innerText =
-        "Access Denied.";
-    }
+  const password = document.getElementById("pass").value;
+  if(password==="MPShah2026"){
+    document.getElementById("future").innerText="If you are reading this in 2030, you made it. Keep going.";
+  } else { document.getElementById("future").innerText="Access Denied."; }
+}
+
+/* Chill music */
+function toggleMusic() {
+  const music=document.getElementById("bgMusic");
+  if(music.paused) music.play(); else music.pause();
+}
+
+/* Deep voice narration */
+function playNarration(file) {
+  if(!file) return;
+  const audio = new Audio(file);
+  audio.play();
 }
 </script>
-
 </body>
-</html>
+    </html>
